@@ -13,10 +13,12 @@ https://github.com/theskumar/python-dotenv/
 Also:
 https://discord.com/developers/docs/topics/oauth2
 
+Use python shyguy.py to run.
+
 for more.
 
 2. Functions
-3. 
+
 Below are the current functions of shyguybot
 
 $help
