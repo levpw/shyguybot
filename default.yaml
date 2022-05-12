@@ -1,0 +1,7 @@
+add_reaction: 0
+repeat: 0.01
+learn_timeout: 15.0
+readimage_timeout: 10.0
+maketable_timeout: 90.0
+ddg_imageresults: 50
+ddg_textresults: 10
