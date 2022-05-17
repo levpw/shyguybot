@@ -136,5 +136,3 @@ language code may be inaccesible due to website (https://www.loc.gov/standards/i
 use _cc to call this function. You can add, remove, or update a command. Or you could list all the commands in your guild. Custom commands can also be called using _customcommand. You can also call _random to use a random command in your guild.
 
 <img width="253" alt="Screen Shot 2022-05-12 at 14 26 18" src="https://user-images.githubusercontent.com/86674677/168143685-63d513fb-1ba8-4d93-bc68-1d8b8cf3b061.png">
-
-<img width="257" alt="Screen Shot 2022-05-12 at 14 26 38" src="https://user-images.githubusercontent.com/86674677/168143704-2f7cf5fe-9bea-419a-b76f-98db3874ee90.png">
