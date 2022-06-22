@@ -1,5 +1,9 @@
-add_reaction: 0
-repeat: 0.01
+version: 1.01
+add_reaction: False
+repeat: 0.00
+collect_message: True
+react_to_mention_all: False
+manage_timeout: 10.0
 learn_timeout: 15.0
 readimage_timeout: 10.0
 maketable_timeout: 90.0

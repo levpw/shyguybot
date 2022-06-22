@@ -9,8 +9,7 @@ import sympy
 import uuid
 import cv2
 
-from random import random
-from random import choice
+from random import random, choice
 from dotenv import load_dotenv
 
 from utils import place_conversion, param_read, write_text, read_text, param_read_nita
@@ -22,6 +21,9 @@ from img_gen import write_image
 from interactive import qa
 from translate import translate
 from learn import learn, forget
+from upgrader import guildconfigUpgrade
+from chat import kamek
+from configio import config_io
 
 import infoHelp
 import infoCourselist
@@ -65,33 +67,66 @@ async def on_message(message):
 
     with open(args.config) as f:
         config = yaml.load(f,Loader=yaml.Loader)
-
     for k, v in config.items():
         setattr(args, k, v)
 
+    #update
+    msg = guildconfigUpgrade(guild_path, args)
+    if msg:
+        await message.channel.send(msg)
+        #reloadconfigs
+        with open(args.config) as f:
+            config = yaml.load(f,Loader=yaml.Loader)
+        for k, v in config.items():
+            setattr(args, k, v)
+
+    chatbot = kamek(guild_path)
+    chatbot.save()
+    if args.collect_message:
+        msg_in = message.content.split(' ')
+        if msg_in[0].isalpha():
+            chatbot.process(message.content)
+            chatbot.record()
+            chatbot.save()
+
+    #manage
+    if message.content.startswith('$manage') and message.author.guild_permissions.administrator:
+        author = message.author
+        channel = message.channel
+        tmp_var = vars(args)
+        del tmp_var['config']
+
+        session = config_io(tmp_var, guild_path)
+        await message.channel.send(session.show())
+
+        def check(m):
+            return m.author == author and m.channel == channel
+                
+        await channel.send('Please enter the number of the setting you want to modify in '+str(args.manage_timeout)+' seconds.')
+        try:
+            option_message = await client.wait_for('message', timeout=args.learn_timeout, check=check)
+            await channel.send(session.update(option_message.content))
+        except asyncio.TimeoutError:
+            await channel.send('Timeout.')
+
     #help message
-    if message.content.startswith('$help'):
+    elif message.content.startswith('$help'):
         await message.channel.send(helpmessage)
 
     #greeting
-    if message.content.startswith('$hello'):
+    elif message.content.startswith('$hello'):
         await message.channel.send('Hello!')
         
     #random choice
-    if message.content.startswith('$choose'):
+    elif message.content.startswith('$choose'):
         input = message.content.split(' ')
         if input[1:]:
             await message.channel.send(choice(input[1:]))
         else:
             await message.channel.send('Nothing to choose from.')
 
-    #interactive
-    if client.user.mentioned_in(message):
-        reply = qa(message, guild_path, args.ddg_imageresults, args.ddg_textresults)
-        await message.channel.send(reply)
-
     #translate
-    if message.content.startswith('$say'):
+    elif message.content.startswith('$say'):
         input = message.content.split(' ',2)
         if input[1:]:
             if input[2:]:
@@ -103,12 +138,12 @@ async def on_message(message):
         await message.channel.send(reply)
 
     #sympy
-    if message.content.startswith('$calc'):
+    elif message.content.startswith('$calc'):
         input = message.content.split(' ',1)[1]
         await message.channel.send(sympy.sympify(input))
 
     #learn
-    if message.content.startswith('$learn'):
+    elif message.content.startswith('$learn'):
         author = message.author
         channel = message.channel
         input = message.content.split(' ',1)
@@ -133,7 +168,7 @@ async def on_message(message):
             await channel.send('Timeout.')
 
     #forget
-    if message.content.startswith('$forget'):
+    elif message.content.startswith('$forget'):
         author = message.author
         channel = message.channel
         input = message.content.split(' ',1)
@@ -157,7 +192,7 @@ async def on_message(message):
     #addReaction
 
     #maketable
-    if message.content.startswith('$maketable'):
+    elif message.content.startswith('$maketable'):
         if message.attachments:
             author = message.author
             channel = message.channel
@@ -224,7 +259,7 @@ async def on_message(message):
             await message.channel.send('Please provide an image of your match result.')
 
     #nita look up
-    if message.content.startswith('$nita'):
+    elif message.content.startswith('$nita'):
         input = message.content.split(' ',2)[1:]
         course, place, warning  = param_read_nita(input)
         if warning:
@@ -246,7 +281,7 @@ async def on_message(message):
             await message.channel.send(reply)
 
     #wiggler nita look up
-    if message.content.startswith('$wiggler'):
+    elif message.content.startswith('$wiggler'):
         input = message.content.split(' ',2)[1:]
         course, place, warning  = param_read_nita(input)
         if warning:
@@ -268,7 +303,7 @@ async def on_message(message):
             await message.channel.send(reply)
 
     #wr look up
-    if message.content.startswith('$wr'):
+    elif message.content.startswith('$wr'):
         input = message.content.split(' ',1)
         course = input[1].lower()
         if course in mk8_course:
@@ -286,7 +321,7 @@ async def on_message(message):
         await message.channel.send(reply)
 
     #customcommand
-    if message.content.startswith('_cc'):
+    elif message.content.startswith('_cc'):
         input = message.content.split(' ',3)
         if input[1:]:
             reply = CustomCommand(input, guild_path)
@@ -301,9 +336,20 @@ async def on_message(message):
         else:
             await message.channel.send('No input given.')
 
+    #interactive
+    elif client.user.mentioned_in(message):
+        reply_stat = True
+        if message.content.split(' ')[0] in ['@everyone','@here']:
+            reply_stat = args.react_to_mention_all
+
+        if reply_stat:
+            reply = qa(message, guild_path, args.collect_message, args.ddg_imageresults, args.ddg_textresults)
+            await message.channel.send(reply)
+
     #random repeat
-    r = random()
-    if r < args.repeat:
-        await message.channel.send(choice([message.content,'I have no idea.','I believe you are correct.']))
+    else:
+        r = random()
+        if r < args.repeat:
+            await message.channel.send(choice([message.content,'I have no idea.','I believe you are correct.']))
 
 client.run(TOKEN)

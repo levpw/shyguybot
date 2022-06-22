@@ -10,13 +10,18 @@ from duckduckgo_search import ddg, ddg_images
 from random import choice
 
 import infoHelp
+from chat import kamek
 
-def qa(message, guild_path, image_results = 10, text_results = 10):
+def qa(message, guild_path, collect_message, image_results = 10, text_results = 10):
     raw_input = message.content
     message_length = len(raw_input.split(' '))
 
-    if message_length == 1:
-        return 'Sup.'
+    if collect_message:
+        chatbot = kamek(guild_path)
+        chatbot.load()
+
+    if message_length == 1 and collect_message:
+        chatbot.speak(np.random.randint(1,15))
 
     elif message_length == 2:
         with open(os.path.join(guild_path,'CustomAnswers.txt'),"r") as f:
@@ -75,4 +80,6 @@ def qa(message, guild_path, image_results = 10, text_results = 10):
                 return choice(results)['image']
             else:
                 results = ddg(input, region='wt-wt', safesearch='Off', time=None, max_results=text_results)
-                return choice(results)['body']
+                if collect_message:
+                    out = chatbot.speak(np.random.randint(1,15))
+                return choice(choice(results)['body'],out)
