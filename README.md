@@ -7,6 +7,7 @@ New function
 Use this function to toggle settings. Default to be only accessible to server admins.
 ## chat bot function
 A new chat function which requires collecting data from your server, and will not be used across other servers. If you do not like this, you can turn it off using $manage command and turn off collect_message. The default setting is on.
+(cannot process languages like chinese or japanese where space is not used)
 
 ## 1. Installation
 Install the dependencies according to environment.yml. Use conda if you like.
