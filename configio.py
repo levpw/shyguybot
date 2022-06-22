@@ -13,9 +13,6 @@ class config_io():
         self.arg_list = list(self.args_dict.keys())
         self.allowed_index = [str(self.arg_list.index(x)) for x in self.arg_list if x in self.allowed]
         self.m = 'Currently only modifications to\n'
-        print(self.arg_list)
-        print(self.allowed)
-        print(self.allowed_index)
         for idx,cmd in enumerate(self.allowed):
             self.m += '{:s}\t{:s}\n'.format(self.allowed_index[idx],cmd)
 
