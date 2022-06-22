@@ -80,6 +80,4 @@ def qa(message, guild_path, collect_message, image_results = 10, text_results = 
                 return choice(results)['image']
             else:
                 results = ddg(input, region='wt-wt', safesearch='Off', time=None, max_results=text_results)
-                if collect_message:
-                    out = chatbot.speak(np.random.randint(1,15))
-                return choice(choice(results)['body'],out)
+                return choice(results)['body']
