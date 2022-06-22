@@ -345,7 +345,7 @@ async def on_message(message):
     #interactive
     elif client.user.mentioned_in(message):
         reply_stat = True
-        if message.content.split(' ')[0] in ['@everyone','@here']:
+        if '@everyone' in message.content.split(' ') or '@here' in message.content.split(' '):
             reply_stat = args.react_to_mention_all
 
         if reply_stat:
