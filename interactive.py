@@ -21,7 +21,7 @@ def qa(message, guild_path, collect_message, image_results = 10, text_results = 
         chatbot.load()
 
     if message_length == 1 and collect_message:
-        chatbot.speak(np.random.randint(1,15))
+        return chatbot.speak(np.random.randint(1,15))
 
     elif message_length == 2:
         with open(os.path.join(guild_path,'CustomAnswers.txt'),"r") as f:

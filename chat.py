@@ -37,18 +37,21 @@ class kamek():
                 self.dict[w] = {w_next:1}
 
     def speak(self, length):
-        pick_from = random.choice(list(self.dict.keys()))
-        next = self.dict[pick_from]
-        out = pick_from
-        for _ in range(length-1):
-            keys_list = list(next.keys())
-            prob_list = np.array(list(next.values()))
-            prob_list = prob_list/np.sum(prob_list)
-            pick_from = np.random.choice(keys_list,p=prob_list)
-            try:
-                next = self.dict[pick_from]
-            except KeyError:
-                break
-            out += ' '+pick_from
+        if self.dict:
+            pick_from = random.choice(list(self.dict.keys()))
+            next = self.dict[pick_from]
+            out = pick_from
+            for _ in range(length-1):
+                keys_list = list(next.keys())
+                prob_list = np.array(list(next.values()))
+                prob_list = prob_list/np.sum(prob_list)
+                pick_from = np.random.choice(keys_list,p=prob_list)
+                try:
+                    next = self.dict[pick_from]
+                except KeyError:
+                    break
+                out += ' '+pick_from
+        else:
+            out = 'Yep.'
 
         return out
