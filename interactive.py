@@ -20,8 +20,11 @@ def qa(message, guild_path, collect_message, image_results = 10, text_results = 
         chatbot = kamek(guild_path)
         chatbot.load()
 
-    if message_length == 1 and collect_message:
-        return chatbot.speak(np.random.randint(1,15))
+    if message_length == 1:
+        if collect_message:
+            return chatbot.speak(np.random.randint(1,15))
+        else:
+            return '?'
 
     elif message_length == 2:
         with open(os.path.join(guild_path,'CustomAnswers.txt'),"r") as f:
@@ -33,6 +36,8 @@ def qa(message, guild_path, collect_message, image_results = 10, text_results = 
             return choice([f'Hi {message.author}!','Hi!',f'Hi <@{message.author.id}>!'])
         elif input in infoDict.keys():
                 return infoDict[input]
+        elif collect_message:
+            return chatbot.speak(np.random.randint(1,15))
         else:
             r = RandomWords()
             return choice([input,r.get_random_word()])

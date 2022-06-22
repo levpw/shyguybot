@@ -47,11 +47,15 @@ async def on_ready():
 @client.event
 async def on_message(message):
 
+    if message.author.bot:
+        return 0
+
     root = './'
+    guild_root = './guilds/'
 
     #read guild id
     guild_id = str(message.guild.id)
-    guild_path = os.path.join(root,guild_id)
+    guild_path = os.path.join(guild_root,guild_id)
 
     #initialize
     guildExist = os.path.isdir(guild_path)
