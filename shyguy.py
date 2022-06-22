@@ -81,10 +81,12 @@ async def on_message(message):
             setattr(args, k, v)
 
     chatbot = kamek(guild_path)
-    chatbot.save()
+    if not chatbot.check():
+        chatbot.save()
     if args.collect_message:
         msg_in = message.content.split(' ')
         if msg_in[0].isalpha():
+            chatbot.load()
             chatbot.process(message.content)
             chatbot.record()
             chatbot.save()
