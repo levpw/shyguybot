@@ -14,7 +14,7 @@ from chat import kamek
 
 def qa(message, guild_path, collect_message, image_results = 10, text_results = 10):
     raw_input = message.content
-    message_length = len(raw_input.split(' '))
+    message_length = len(raw_input.split())
 
     if collect_message:
         chatbot = kamek(guild_path)
@@ -29,7 +29,7 @@ def qa(message, guild_path, collect_message, image_results = 10, text_results = 
     elif message_length == 2:
         with open(os.path.join(guild_path,'CustomAnswers.txt'),"r") as f:
             infoDict = json.loads(f.read())
-        input = str.lower(raw_input.split(' ')[1].lstrip(' '))
+        input = str.lower(raw_input.split()[1].lstrip(' '))
         if input == "help":
             return infoHelp.helpmessage
         elif input == "hi":
@@ -43,10 +43,10 @@ def qa(message, guild_path, collect_message, image_results = 10, text_results = 
             return choice([input,r.get_random_word()])
 
     else:
-        input = raw_input.split(' ')[1:]
+        input = raw_input.split()[1:]
         if input[0].lower() == "say":
             out = ''
-            for word in raw_input.split(' ')[2:]:
+            for word in raw_input.split()[2:]:
                 if word.lower() in ['i','me']:
                     word = choice([word,'you',f'{message.author}',f'{message.author.id}'])
                 elif word.lower() in ['you']:

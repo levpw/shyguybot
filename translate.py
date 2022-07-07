@@ -6,9 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 DEEPL = os.getenv('DEEPL_TOKEN')
 
-def translate(input):
-    target_lang = input[1]
-    text = input[2]
+def translate(target_lang, text):
 
     data = {
         'auth_key': DEEPL,
