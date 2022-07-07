@@ -8,9 +8,12 @@ import asyncio
 import sympy
 import uuid
 import cv2
+import pinyin
+import pykakasi
 
 from random import random, choice
 from dotenv import load_dotenv
+from duckduckgo_search import ddg_translate
 
 from utils import place_conversion, param_read, write_text, read_text, param_read_nita
 from initialize_guild import guildInitializer
@@ -91,8 +94,21 @@ async def on_message(message):
             chatbot.save()
         if args.collect_message:
             if input[0].isalpha():
+                lan = ddg_translate(message.content)[0]['detected_language']
+                data_in = message.content
+                if lan.startswith('zh'):
+                    data_in = pinyin.get(message.content, format="strip", delimiter=" ")
+                    
+                elif lan.startswith('ja'):
+                    kks = pykakasi.kakasi()
+                    result = kks.convert(message.content)
+                    words = ''
+                    for w in result:
+                        words += w['orig'] + ' '
+                    data_in = words
+
                 chatbot.load()
-                chatbot.process(message.content)
+                chatbot.process(data_in)
                 chatbot.record()
                 chatbot.save()
 
@@ -125,6 +141,21 @@ async def on_message(message):
         #greeting
         elif command == '$hello':
             await channel.send('Hello!')
+
+        elif command == '$hira' or '$kana':
+            if len(input)>1:
+                lan = ddg_translate(message.content)[0]['detected_language']
+                if lan == 'ja':
+                    kks = pykakasi.kakasi()
+                    result = kks.convert(input[1])
+                    words = ''
+                    for w in result:
+                        words += w[command[1:]]
+                    await channel.send(words)
+                else:
+                    await channel.send('Not Japanese.')
+            else:
+                await channel.send('Missing input.')
 
         #random choice
         elif command == '$choose':
