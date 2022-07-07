@@ -142,7 +142,7 @@ async def on_message(message):
         elif command == '$hello':
             await channel.send('Hello!')
 
-        elif command == '$hira' or '$kana':
+        elif command == '$hira' or command == '$kana':
             if len(input)>1:
                 lan = ddg_translate(message.content)[0]['detected_language']
                 if lan == 'ja':
