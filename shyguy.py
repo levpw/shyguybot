@@ -31,7 +31,7 @@ from configio import config_io
 import infoHelp
 import infoCourselist
 
-client = discord.Client()
+client = discord.Client(intents=discord.Intents.default()) # new stuff intent
 
 load_dotenv()
 #TOKEN = os.getenv('DISCORD_TOKEN')
@@ -88,6 +88,8 @@ async def on_message(message):
                 config = yaml.load(f,Loader=yaml.Loader)
             for k, v in config.items():
                 setattr(args, k, v)
+
+        guild_subscription = args.subscription
 
         chatbot = kamek(guild_path)
         if not chatbot.check():

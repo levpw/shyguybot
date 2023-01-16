@@ -1,2 +1,3 @@
-.DISCORD_TOKEN
-.SHYGUY_E
+.env
+/guilds/
+/__pycache__/

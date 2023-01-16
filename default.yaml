@@ -1,4 +1,4 @@
-version: 1.01
+version: 1.02
 add_reaction: False
 repeat: 0.00
 collect_message: True
@@ -9,3 +9,4 @@ readimage_timeout: 10.0
 maketable_timeout: 90.0
 ddg_imageresults: 50
 ddg_textresults: 10
+subscription: 0
